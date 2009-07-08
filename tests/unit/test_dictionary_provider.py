@@ -60,5 +60,26 @@ class TestDictionaryProvider(BaseUnitTest):
         result = provider.parse(query, Actions.SelectMany)
         assert result == {'one':1,'two':2}, "The dictionary was not filtered properly and now is: %s" % result
 
+    def test_dictionary_provider_filters_using_key(self):
+        dct = {'alpha':1, 'beta': 2}
+        query = From(dct).where("item.key == 'alpha'")
+        provider = query.provider
+        result = provider.parse(query, Actions.SelectMany)
+        assert result == {'alpha':1}, "The dictionary was not filtered properly and now is: %s" % result
+
+    def test_dictionary_provider_filters_using_both_key_and_value(self):
+        dct = {'alpha':1, 'beta': 1, 'teta':2}
+        query = From(dct).where("item.value == 1 and item.key == 'alpha'")
+        provider = query.provider
+        result = provider.parse(query, Actions.SelectMany)
+        assert result == {'alpha':1}, "The dictionary was not filtered properly and now is: %s" % result
+
+    def test_dictionary_provider_filters_using_both_key_and_value_fails_when_dealing_with_invalid_values(self):
+        dct = {'alpha':1, 'beta': 1, 'teta':2}
+        query = From(dct).where("item.value == 2 and item.key == 'alpha'")
+        provider = query.provider
+        result = provider.parse(query, Actions.SelectMany)
+        assert result == {}, "The dictionary was not filtered properly and now is: %s" % result
+
 if __name__ == '__main__':
     unittest.main()
