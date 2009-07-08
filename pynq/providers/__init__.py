@@ -196,9 +196,33 @@ class CollectionProvider(IPynqProvider):
             app(new_item)
 
         return items
+#######################################################
+class DictionaryProvider(IPynqProvider):
+    def __init__(self, dic):
+        self.dic = dic
+        self.col = self.__convert_dict(dic)
+
+    def __convert_dict(self, dic):
+        items = []
+        for key, value in dic.iteritems():
+            kvp = KeyValuePair(key, value)
+            items.append(kvp)
+        return items
+
+    def parse(self, query, action, **kwargs):
+        collection_provider = CollectionProvider(self.col)
+        result = collection_provider.parse(query, action, **kwargs)
+        return dict([(item.key, item.value) for item in result])
+
+class KeyValuePair (object):
+
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+
 
 class BinaryExpressionProcessor(object):
     @classmethod
-    def process(cls, collection, expression):
+    def process(cls, iterator, expression):
         filters = str(expression)
-        return [item for item in collection if eval(filters)]
+        return [item for item in iterator if eval(filters)]

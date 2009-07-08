@@ -18,7 +18,7 @@ from os.path import dirname, abspath, join
 root_path = abspath(join(dirname(__file__), "../../"))
 sys.path.insert(0, root_path)
 
-from pynq.providers import CollectionProvider
+from pynq.providers import CollectionProvider, DictionaryProvider
 from pynq.parser import ExpressionParser
 from pynq.guard import Guard
 from pynq.expressions import Expression
@@ -33,6 +33,8 @@ class Query(object):
         Guard.against_none(provider, error_message)
         if isinstance(provider, (list, tuple)):
             self.provider = CollectionProvider(provider)
+        elif isinstance(provider, (dict,)):
+            self.provider = DictionaryProvider(provider)
         else:
             self.provider = provider
         self.expressions = [] 
