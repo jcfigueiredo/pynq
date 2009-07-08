@@ -40,7 +40,6 @@ class TestCollectionProvider(BaseUnitTest):
         assert isinstance(provider.parse(query, Actions.SelectMany), list)
         
     def test_collection_provider_filters_using_binary_expression(self):
-        import pdb; pdb.set_trace()
         col = ["a","b"]
         query = From(col).where("item == 'a'")
         provider = query.provider
